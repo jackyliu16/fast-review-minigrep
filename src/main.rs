@@ -11,7 +11,7 @@ fn main() {
     dbg!(&args);
 
     let config = Config::new(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
 
@@ -19,7 +19,7 @@ fn main() {
     println!("Read String From {}", config.file_path);
 
     if let Err(e) = ripgrep_tutorial::run(config) {
-        println!("Problem parsing arguments: {e}");
+        eprintln!("Problem parsing arguments: {e}");
         process::exit(1);
     }
 }
