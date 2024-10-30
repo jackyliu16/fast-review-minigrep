@@ -1,7 +1,8 @@
 use std::env;
 use std::fs;
 use std::process;
-use std::error::Error;
+
+use ripgrep_tutorial::Config;
 
 fn main() {
     println!("Hello, world!");
@@ -17,29 +18,10 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("Read String From {}", config.file_path);
 
-    if let Err(e) = run(config) {
+    if let Err(e) = ripgrep_tutorial::run(config) {
         println!("Problem parsing arguments: {e}");
         process::exit(1);
     }
 }
 
-fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.file_path)?; 
-    println!("{contents}");
-    Ok(())
-}
-
-struct Config {
-    query: String,
-    file_path: String,
-}
-
-impl Config {
-    fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("No enough arguments");
-        };
-        Ok(Self { query: args[1].clone(), file_path: args[2].clone() })
-    }
-}
 
