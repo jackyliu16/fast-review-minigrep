@@ -7,7 +7,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     dbg!(&args);
 
-    let config = parse_config(&args);
+    let config = Config::new(&args);
 
     println!("Read String From {}", config.file_path);
     let contents = fs::read_to_string(config.file_path)
@@ -20,6 +20,9 @@ struct Config {
     file_path: String,
 }
 
-fn parse_config(args: &[String]) -> Config {
-    Config { query: args[1].clone(), file_path: args[2].clone() }
+impl Config {
+    fn new(args: &[String]) -> Config {
+        Self { query: args[1].clone(), file_path: args[2].clone() }
+    }
 }
+
