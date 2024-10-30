@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url  = "github:numtide/flake-utils";
   };
 
@@ -33,47 +34,70 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-      in
-      {
-        devShells = {
-          default = pkgs.mkShell {
-            buildInputs = with pkgs;[
-              gnumake
-              # Basic
-              openssl
-              pkg-config
-              fd
-              # Development tools
-              ripgrep
-              fzf
-              zellij
-              # Rust Configuraiton  
-              zlib
-              rustup
-              cargo-binutils
-              rust-toolchain
-            ];
+      in {
+        devShells.default = with pkgs; mkShell {
+          buildInputs = [
+            gnumake
+            # Require of rust-overlay
+            openssl
+            pkg-config
+            eza
+            fd
+            # Development Tools
+            ripgrep
+            zellij
+            fzf
 
-            # nativeBuildInputs = with pkgs; [
-            #   llvmPackages.libclang
-            #   llvmPackages.libcxxClang
-            #   clang
-            # ];
-            # LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"; # nixpkgs@52447
-            # BINDGEN_EXTRA_CLANG_ARGS = "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${pkgs.lib.getVersion pkgs.clang}/include"; # https://github.com/NixOS/nixpkgs/issues/52447#issuecomment-853429315
+            # rust-bin.nightly.latest.default
+            rust-toolchain
+          ];
 
-            shellHook = ''
-              # exec zsh
+          shellHook = ''
+            alias ls=eza
+            alias find=fd
 
-              # Change the mirror of rust
-              export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-              export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
-            '';
-              # unset OBJCOPY # Avoiding Overlay
-              # export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib" # nixpkgs@52447
-              # export LD_LIBRARY_PATH="${pkgs.zlib}/lib:$LD_LIBRARY_PATH" # nixpkgs@92946
-          };
+            export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+            export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+          '';
         };
+        # devShells = {
+        #   default = pkgs.mkShell {
+        #     buildInputs = with pkgs;[
+        #       gnumake
+        #       # Basic
+        #       openssl
+        #       pkg-config
+        #       fd
+        #       # Development tools
+        #       ripgrep
+        #       fzf
+        #       zellij
+        #       # Rust Configuraiton  
+        #       # cargo-binutils
+        #       # rust-toolchain
+        #       rust-
+        #     ];
+        #
+        #     # nativeBuildInputs = with pkgs; [
+        #     #   llvmPackages.libclang
+        #     #   llvmPackages.libcxxClang
+        #     #   clang
+        #     # ];
+        #     # LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"; # nixpkgs@52447
+        #     # BINDGEN_EXTRA_CLANG_ARGS = "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${pkgs.lib.getVersion pkgs.clang}/include"; # https://github.com/NixOS/nixpkgs/issues/52447#issuecomment-853429315
+        #
+        #     shellHook = ''
+        #       # exec zsh
+        #
+        #       # Change the mirror of rust
+        #       export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+        #       export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+        #     '';
+        #       # unset OBJCOPY # Avoiding Overlay
+        #       # export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib" # nixpkgs@52447
+        #       # export LD_LIBRARY_PATH="${pkgs.zlib}/lib:$LD_LIBRARY_PATH" # nixpkgs@92946
+        #   };
+        # };
       }
     );
 }
