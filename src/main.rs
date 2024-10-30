@@ -7,16 +7,19 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     dbg!(&args);
 
-    let (query, file_path) = parse_config(&args);
-    println!("{query} and {file_path}");
+    let config = parse_config(&args);
 
-    let contents = fs::read_to_string(file_path);
+    println!("Read String From {}", config.file_path);
+    let contents = fs::read_to_string(config.file_path)
+        .expect("Should have access to read file");
+    println!("{contents}");
 }
 
-fn parse_config(args: &[String]) -> (&str, &str) {
-    // (&args[1], &args[2])
-    let query = &args[1];
-    let file_path = &args[2];
+struct Config {
+    query: String,
+    file_path: String,
+}
 
-    (query, file_path)
+fn parse_config(args: &[String]) -> Config {
+    Config { query: args[1].clone(), file_path: args[2].clone() }
 }
