@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 fn main() {
     println!("Hello, world!");
@@ -16,19 +17,16 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("Read String From {}", config.file_path);
 
-    run(config).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+    if let Err(e) = run(config) {
+        println!("Problem parsing arguments: {e}");
         process::exit(1);
-    });
+    }
 }
 
-fn run(config: Config) -> Result<(), &'static str> {
-    if let contents = fs::read_to_string(config.file_path).unwrap() {
-        println!("{contents}");
-        return Ok(())
-    } else {
-        return Err("should have access to read file");
-    }
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?; 
+    println!("{contents}");
+    Ok(())
 }
 
 struct Config {
