@@ -16,13 +16,19 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("Read String From {}", config.file_path);
 
-    run(config);
+    run(config).unwrap_or_else(|err| {
+        println!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
 }
 
-fn run(config: Config) {
-    let contents = fs::read_to_string(config.file_path)
-        .expect("Should have access to read file");
-    println!("{contents}");
+fn run(config: Config) -> Result<(), &'static str> {
+    if let contents = fs::read_to_string(config.file_path).unwrap() {
+        println!("{contents}");
+        return Ok(())
+    } else {
+        return Err("should have access to read file");
+    }
 }
 
 struct Config {
