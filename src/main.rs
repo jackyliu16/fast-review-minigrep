@@ -13,7 +13,13 @@ fn main() {
         process::exit(1);
     });
 
+    println!("Searching for {}", config.query);
     println!("Read String From {}", config.file_path);
+
+    run(config);
+}
+
+fn run(config: Config) {
     let contents = fs::read_to_string(config.file_path)
         .expect("Should have access to read file");
     println!("{contents}");
