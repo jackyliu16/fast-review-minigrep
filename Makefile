@@ -53,3 +53,15 @@ git-log:
 
 
 .PHONY: clean-env env git-log
+
+######################
+# Coding instruction #
+######################
+.PHONY: layout
+
+layout:
+ifeq ($(IN_NIX_SHELL),impure)
+	zellij -l .zellij.kdl
+else
+	echo "you should run make env first to make you inside the nix shell environment";
+endif
