@@ -7,9 +7,16 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     dbg!(&args);
 
-    let file_path = &args[1]; // 0 is this file name
+    let (query, file_path) = parse_config(&args);
+    println!("{query} and {file_path}");
 
-    let contents = fs::read_to_string(&file_path).expect("Should have been able to read the file");
+    let contents = fs::read_to_string(file_path);
+}
 
-    println!("with text:\n{contents}");
+fn parse_config(args: &[String]) -> (&str, &str) {
+    // (&args[1], &args[2])
+    let query = &args[1];
+    let file_path = &args[2];
+
+    (query, file_path)
 }
